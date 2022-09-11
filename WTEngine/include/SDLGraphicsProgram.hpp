@@ -4,12 +4,15 @@
 // C++ Libraries
 #include "SDL2/SDL.h"
 #include "glad/glad.h"
+#include "stb/stb_image.h"
 
 // Standard stuff
 #include <vector>
 #include <iostream>
 #include <string>
 #include <fstream>
+
+const unsigned int attr_size = 8;
 
 class SDLGraphicsProgram {
 public:
@@ -32,9 +35,10 @@ private:
     SDL_GLContext glContext;
 
 
-    // Temporary for base triangle
+    // Temporary for base square
     std::vector<float> vertexArray;
     std::vector<unsigned int> indexArray;
+    unsigned int texture;
 
     unsigned int VBO;
     unsigned int VAO;

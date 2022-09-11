@@ -3,7 +3,7 @@
 #include "SDLGraphicsProgram.hpp"
 
 int main(int argc, char * argv[]) {
-	SDLGraphicsProgram program = SDLGraphicsProgram(600, 400);
+	SDLGraphicsProgram program = SDLGraphicsProgram(600, 600);
 	program.Loop();
 
 	return 0;
