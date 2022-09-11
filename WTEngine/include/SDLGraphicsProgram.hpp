@@ -17,10 +17,12 @@ public:
     SDLGraphicsProgram(int w, int h);
     // Destructor
     ~SDLGraphicsProgram();
+    // Render images
+    void Render();
     // Loop
     void Loop();
     // Set up shaders
-    bool SetupShaders();
+    unsigned int SetupShaders();
     // Load shader from glsl file to String
     std::string LoadShader(std::string dir);
 private:
@@ -32,10 +34,13 @@ private:
 
     // Temporary for base triangle
     std::vector<float> vertexArray;
+    std::vector<unsigned int> indexArray;
 
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
+
+    unsigned int program;
 };
 
 

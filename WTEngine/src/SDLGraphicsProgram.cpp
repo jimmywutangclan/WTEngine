@@ -20,7 +20,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 	// Create window
-	window = SDL_CreateWindow("WTEng", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 400, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow("WTEng", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (window == NULL) {
 		std::cout << "Window error" << std::endl;
 		exit(EXIT_FAILURE);
@@ -40,19 +40,38 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	}
 
 	// Set up OpenGL Shaders
-	if (!SetupShaders()) {
+	program = SetupShaders();
+	if (program == GL_FALSE) {
 		std::cout << "Shaders error" << std::endl;
 		exit(EXIT_FAILURE);
 	}
 
 	std::cout << "Setup success" << std::endl;
 
-	// Set up base vertex array
+	// Set up base triangle
 	vertexArray = {
 	-0.5f, -0.5f, 0.0f,
 	 0.5f, -0.5f, 0.0f,
 	 0.0f,  0.5f, 0.0f
 	};
+	
+	indexArray = {
+		0, 1, 2
+	};
+
+	// Generate all buffers first
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	// Bind VAO buffer 
+	glBindVertexArray(VAO);
+	// Set up VBO buffer
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexArray.size(), &vertexArray[0], GL_STATIC_DRAW);
+
+	// Set up vertex attribute pointer
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 
 }
 
@@ -62,6 +81,21 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 	SDL_DestroyWindow(window);
 
 	SDL_Quit();
+}
+
+// For each tick within the Loop, call render to generate image
+void SDLGraphicsProgram::Render() {
+	// Just render background
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	//Clear color buffer and Depth Buffer
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glUseProgram(program);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	SDL_GL_SwapWindow(window);
 }
 
 // Indefinitely running main loop
@@ -89,11 +123,8 @@ void SDLGraphicsProgram::Loop() {
 			}
 		}
 
-		glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+		Render();
 
-		// Update screen of our specified window
-		SDL_GL_SwapWindow(window);
 	}
 }
 
@@ -118,14 +149,15 @@ void SDLGraphicsProgram::Loop() {
 
 // OpenGL Setup logic:
 
-bool SDLGraphicsProgram::SetupShaders() {
+unsigned int SDLGraphicsProgram::SetupShaders() {
+	// Load Shaders from GLSL file
 	std::string vertexShaderCode = LoadShader("./shaders/vert.glsl");
 	std::string fragmentShaderCode = LoadShader("./shaders/frag.glsl");
 
 	const char* vertexShaderCstr = vertexShaderCode.c_str();
 	const char* fragmentShaderCstr = fragmentShaderCode.c_str();
 
-	// Compile and bind vertex shader first
+	// Compile and bind vertex shader
 	unsigned int vertexShader;
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertexShader, 1, &vertexShaderCstr, NULL);
@@ -159,7 +191,7 @@ bool SDLGraphicsProgram::SetupShaders() {
 
 	// If compilation failed, early exit
 	if (vertexResult == GL_FALSE || fragResult == GL_FALSE) {
-		return false;
+		return GL_FALSE;
 	}
 
 	// Create a shader program and link shaders to it
@@ -181,14 +213,14 @@ bool SDLGraphicsProgram::SetupShaders() {
 
 	// If program failed to link, early exit
 	if (programResult == GL_FALSE) {
-		return false;
+		return GL_FALSE;
 	}
 	
 	// Clean up and delete shaders, no longer needed
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 	
-	return true;
+	return shaderProgram;
 
 }
 
