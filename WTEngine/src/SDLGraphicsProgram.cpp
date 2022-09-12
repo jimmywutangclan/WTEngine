@@ -97,7 +97,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(textureData);
 
-	// Set up uniforms
+	// Set up uniform variable for the texture
 	glUseProgram(program);
 	glUniform1i(glGetUniformLocation(program, "texture1"), 0); // Set up uniform variable "texture1" to use the 0th texture
 
@@ -105,6 +105,8 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	std::cout << "Quad creation success" << std::endl;
+
+	curr_angle = 0.0f;
 }
 
 // Destructor
@@ -123,8 +125,20 @@ void SDLGraphicsProgram::Render() {
 	//Clear color buffer and Depth Buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	// Starting from identity matrix, create transformation matrix to be applied to the shape every cycle
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::rotate(transform, glm::radians(curr_angle), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotate matrix by 90 degrees on the z-axis
+	transform = glm::scale(transform, glm::vec3(1.3f, 1.3f, 1.3f)); // Scale all axes by 1.3x
+	unsigned int transformLoc = glGetUniformLocation(program, "transform");
+	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+
+	// Increment the angle after every tick
+	curr_angle += 1;
+	if (curr_angle >= 360.0f) {
+		curr_angle = 0;
+	}
+
 	glUseProgram(program);
-	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
 
 	SDL_GL_SwapWindow(window);

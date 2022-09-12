@@ -5,6 +5,9 @@
 #include "SDL2/SDL.h"
 #include "glad/glad.h"
 #include "stb/stb_image.h"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 // Standard stuff
 #include <vector>
@@ -39,7 +42,7 @@ private:
     std::vector<float> vertexArray;
     std::vector<unsigned int> indexArray;
     unsigned int texture;
-    unsigned int texture2;
+    float curr_angle;
 
     unsigned int VBO;
     unsigned int VAO;
