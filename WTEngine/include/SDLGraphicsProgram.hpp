@@ -12,7 +12,7 @@
 #include <string>
 #include <fstream>
 
-const unsigned int attr_size = 8;
+const unsigned int attr_size = 5;
 
 class SDLGraphicsProgram {
 public:
@@ -39,6 +39,7 @@ private:
     std::vector<float> vertexArray;
     std::vector<unsigned int> indexArray;
     unsigned int texture;
+    unsigned int texture2;
 
     unsigned int VBO;
     unsigned int VAO;
