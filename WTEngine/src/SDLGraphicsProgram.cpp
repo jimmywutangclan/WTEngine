@@ -97,27 +97,12 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(textureData);
 
-	// Set up texture 2
-	textureData = stbi_load("./resources/fortnit.jpg", &width, &height, &nrChannels, 0);
-	if (!textureData) {
-		std::cout << "Texture loading error" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	glGenTextures(1, &texture2);
-	glBindTexture(GL_TEXTURE_2D, texture2);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(textureData);
-
 	// Set up uniforms
 	glUseProgram(program);
-	glUniform1i(glGetUniformLocation(program, "texture1"), 0); // Set up uniform texture1 to use the 0th texture
-	glUniform1i(glGetUniformLocation(program, "texture2"), 1);
+	glUniform1i(glGetUniformLocation(program, "texture1"), 0); // Set up uniform variable "texture1" to use the 0th texture
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture2);
 
 	std::cout << "Quad creation success" << std::endl;
 }
