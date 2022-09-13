@@ -57,7 +57,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 		// Second Triangle
 		-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, // top left
 		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom left
-		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // top right
+		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // top rightq
 	};
 	
 	indexArray = {
@@ -125,19 +125,35 @@ void SDLGraphicsProgram::Render() {
 	//Clear color buffer and Depth Buffer
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	// Starting from identity matrix, create transformation matrix to be applied to the shape every cycle
-	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::rotate(transform, glm::radians(curr_angle), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotate matrix by 90 degrees on the z-axis
-	transform = glm::scale(transform, glm::vec3(1.3f, 1.3f, 1.3f)); // Scale all axes by 1.3x
-	unsigned int transformLoc = glGetUniformLocation(program, "transform");
-	glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(transform));
+	// Starting from identity matrix, set the quad's position relative to the world origin, rotate, and then scale the model
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.2f, 0.2f, -1.6f)); // Rotate matrix by 90 degrees on the z-axis
+	model = glm::rotate(model, glm::radians(curr_angle), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotate matrix by 90 degrees on the z-axis
+	model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f)); // Scale all axes by 1.3x
+	unsigned int modelLoc = glGetUniformLocation(program, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	// Increment the angle after every tick
 	curr_angle += 1;
 	if (curr_angle >= 360.0f) {
 		curr_angle = 0;
 	}
+	
 
+	// This is the logic for view and projection(above transform is for model)
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+	// retrieve the matrix uniform locations
+	unsigned int viewLoc = glGetUniformLocation(program, "view");
+	unsigned int projLoc = glGetUniformLocation(program, "projection");
+	// pass them to the shaders 
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+	// Activate program and draw the shapes
 	glUseProgram(program);
 	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
 
