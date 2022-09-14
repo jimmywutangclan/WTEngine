@@ -23,6 +23,8 @@ public:
     SDLGraphicsProgram(int w, int h);
     // Destructor
     ~SDLGraphicsProgram();
+    // Load cube properties
+    void LoadCube(std::string texture);
     // Create, Update and Bind uniform Model, View and Projection matrices for the cube
     void UpdateCube(float x, float y, float z);
     // Render images

@@ -48,6 +48,23 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 
 	std::cout << "Setup success" << std::endl;
 
+	LoadCube("./resources/fortnit.jpg");
+
+	std::cout << "Quad creation success" << std::endl;
+
+	curr_angle = 0.0f;
+}
+
+// Destructor
+SDLGraphicsProgram::~SDLGraphicsProgram() {
+	// delete the memory address containing the window
+	SDL_DestroyWindow(window);
+
+	SDL_Quit();
+}
+
+// Load Cube properties
+void SDLGraphicsProgram::LoadCube(std::string textureAddr) {
 	// Set up base triangle 2 attributes, position/texture mapping)
 	vertexArray = {
 		// Back cube
@@ -110,7 +127,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
 		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
 	};
-	
+
 	indexArray = {
 		// back cube
 		0,1,2,
@@ -150,10 +167,10 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, attr_size * sizeof(float), (void*)(3 * sizeof(float))); // attribute 1(texture mapping)
 	glEnableVertexAttribArray(1);
-	
+
 	// Set up texture 1
 	int width, height, nrChannels;
-	unsigned char* textureData = stbi_load("./resources/lose_subscriber.png", &width, &height, &nrChannels, 0);
+	unsigned char* textureData = stbi_load(textureAddr.c_str(), &width, &height, &nrChannels, 0);
 	if (!textureData) {
 		std::cout << "Texture loading error" << std::endl;
 		exit(EXIT_FAILURE);
@@ -170,18 +187,6 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-
-	std::cout << "Quad creation success" << std::endl;
-
-	curr_angle = 0.0f;
-}
-
-// Destructor
-SDLGraphicsProgram::~SDLGraphicsProgram() {
-	// delete the memory address containing the window
-	SDL_DestroyWindow(window);
-
-	SDL_Quit();
 }
 
 // Called by Render each time, to draw the cube at a specific position, rotate it, and update uniform transformation matrices
