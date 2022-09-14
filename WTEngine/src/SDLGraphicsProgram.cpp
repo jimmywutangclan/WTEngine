@@ -50,19 +50,86 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 
 	// Set up base triangle 2 attributes, position/texture mapping)
 	vertexArray = {
+		// Back cube
 		// First Triangle
-		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom left
-		0.5f, -0.5f, 0.0f, 1.0f, 1.0f, // bottom right
-		0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // top right 
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
+		-0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // top right 
 		// Second Triangle
-		-0.5f, 0.5f, 0.0f, 0.0f, 0.0f, // top left
-		-0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // bottom left
-		0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // top rightq
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
+		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+		-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+
+		// Front cube
+		// Third Triangle
+		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+		0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+		0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
+		// Fourth Triangle
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
+		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
+
+		// Side left cube
+		// First Triangle
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+		-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+		-0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
+		// Second Triangle
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
+		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
+
+		// Side right cube
+		// First Triangle
+		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right 
+		// Second Triangle
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
+		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+
+		// top cube
+		// First Triangle
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+		// Second triangle
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
+		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+
+		// bottom cube
+		// First Triangle
+		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+		-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
+		// Second triangle
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // top left
+		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
 	};
 	
 	indexArray = {
+		// back cube
 		0,1,2,
-		3,4,5
+		3,4,5,
+		// front cube
+		6,7,8,
+		9,10,11,
+		// side left
+		12,13,14,
+		15,16,17,
+		// side right
+		18,19,20,
+		21,22,23,
+		// top cube
+		24,25,26,
+		27,28,29,
+		// bottom cube
+		30,31,32,
+		33,34,35
 	};
 
 	// Generate all buffers first
@@ -117,33 +184,27 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 	SDL_Quit();
 }
 
-// For each tick within the Loop, call render to generate image
-void SDLGraphicsProgram::Render() {
-	// Just render background
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-	//Clear color buffer and Depth Buffer
-	glClear(GL_COLOR_BUFFER_BIT);
-
+// Called by Render each time, to draw the cube at a specific position, rotate it, and update uniform transformation matrices
+void SDLGraphicsProgram::UpdateCube(float x, float y, float z) {
 	// Starting from identity matrix, set the quad's position relative to the world origin, rotate, and then scale the model
 	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.2f, 0.2f, -1.6f)); // Rotate matrix by 90 degrees on the z-axis
-	model = glm::rotate(model, glm::radians(curr_angle), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotate matrix by 90 degrees on the z-axis
-	model = glm::scale(model, glm::vec3(1.3f, 1.3f, 1.3f)); // Scale all axes by 1.3x
+	model = glm::translate(model, glm::vec3(x,y,z)); // Rotate matrix by 90 degrees on the z-axis
+	model = glm::rotate(model, glm::radians(curr_angle), glm::vec3(1.0f, 1.0f, 1.0f)); // Rotate matrix by 90 degrees on specified axes
+	model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f)); // Scale all axes by 0.6x
 	unsigned int modelLoc = glGetUniformLocation(program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	// Increment the angle after every tick
-	curr_angle += 1;
+	curr_angle += 0.25f;
 	if (curr_angle >= 360.0f) {
 		curr_angle = 0;
 	}
-	
+
 
 	// This is the logic for view and projection(above transform is for model)
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // The desired position for the view is reversed, to apply onto the model
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 	// retrieve the matrix uniform locations
 	unsigned int viewLoc = glGetUniformLocation(program, "view");
@@ -151,11 +212,30 @@ void SDLGraphicsProgram::Render() {
 	// pass them to the shaders 
 	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+}
 
+// For each tick within the Loop, call render to generate image
+void SDLGraphicsProgram::Render() {
+	// Just render background
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Enable depth test
+	glEnable(GL_DEPTH_TEST);
+
+	//Clear color buffer and Depth Buffer
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	UpdateCube(-0.2, 0.2, 0.3);
 
 	// Activate program and draw the shapes
 	glUseProgram(program);
 	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
+
+	// Update the cube world space to be a new value
+	UpdateCube(0.7, 0.7, -0.3);
+	// Using the existing VBO, VAO and EBO, draw another cube in the new world space updated earlier
+	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
+
 
 	SDL_GL_SwapWindow(window);
 }

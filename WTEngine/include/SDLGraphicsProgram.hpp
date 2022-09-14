@@ -23,6 +23,8 @@ public:
     SDLGraphicsProgram(int w, int h);
     // Destructor
     ~SDLGraphicsProgram();
+    // Create, Update and Bind uniform Model, View and Projection matrices for the cube
+    void UpdateCube(float x, float y, float z);
     // Render images
     void Render();
     // Loop
@@ -38,12 +40,15 @@ private:
     SDL_GLContext glContext;
 
 
-    // Temporary for base square
+    // Temporary for base cube
     std::vector<float> vertexArray;
     std::vector<unsigned int> indexArray;
     unsigned int texture;
     float curr_angle;
 
+    // VBO, VAO, and EBO
+    // VBO and EBO are the arrays for vertices/indices associated with our cube
+    // VAO stores attributes for how to interpret each vertex
     unsigned int VBO;
     unsigned int VAO;
     unsigned int EBO;
