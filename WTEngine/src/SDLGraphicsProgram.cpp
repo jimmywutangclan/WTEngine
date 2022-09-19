@@ -53,6 +53,11 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 	std::cout << "Quad creation success" << std::endl;
 
 	curr_angle = 0.0f;
+
+	// Set up Camera
+	cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
 // Destructor
@@ -209,7 +214,7 @@ void SDLGraphicsProgram::UpdateCube(float x, float y, float z) {
 	// This is the logic for view and projection(above transform is for model)
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f)); // The desired position for the view is reversed, to apply onto the model
+	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // Use the camera properties to determine the view matrix
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 	// retrieve the matrix uniform locations
 	unsigned int viewLoc = glGetUniformLocation(program, "view");
@@ -260,12 +265,27 @@ void SDLGraphicsProgram::Loop() {
 			if (e.type == SDL_QUIT) {
 				quit = true;
 			}
-
+			if (e.type == SDL_MOUSEMOTION) {
+				int mouseX = e.motion.x;
+				int mouseY = e.motion.y;
+			}
 			if (e.type = SDL_KEYDOWN) {
 				switch (e.key.keysym.sym) {
-				case SDLK_q:
-					quit = true;
-					break;
+					case SDLK_q:
+						quit = true;
+						break;
+					case SDLK_w:
+						cameraPos += moveSpeed * cameraFront;
+						break;
+					case SDLK_s:
+						cameraPos -= moveSpeed * cameraFront;
+						break;
+					case SDLK_a:
+						cameraPos -= moveSpeed * glm::cross(cameraFront, cameraUp);
+						break;
+					case SDLK_d:
+						cameraPos += moveSpeed * glm::cross(cameraFront, cameraUp);
+						break;
 				}
 			}
 		}

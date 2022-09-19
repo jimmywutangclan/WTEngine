@@ -15,7 +15,10 @@
 #include <string>
 #include <fstream>
 
+// the size of how many floats a vertex use to describe all its attributes
 const unsigned int attr_size = 5;
+// the speed at which the camera moves
+const float moveSpeed = 0.05f;
 
 class SDLGraphicsProgram {
 public:
@@ -41,6 +44,10 @@ private:
     SDL_Window* window;
     SDL_GLContext glContext;
 
+    // Camera properties:
+    glm::vec3 cameraPos;
+    glm::vec3 cameraFront;
+    glm::vec3 cameraUp;
 
     // Temporary for base cube
     std::vector<float> vertexArray;
