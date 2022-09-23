@@ -56,8 +56,12 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 
 	// Set up Camera
 	cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	cameraDir = glm::vec3(0.0f, 0.0f, -1.0f);
 	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+	pitch = 0.0f; // camera direction starting looking straight, not upward or downwards
+	yaw = -90.0f; // camera direction starting facing forwards, not left or right
+	mousePosX = width / 2;
+	mousePosY = height / 2;
 }
 
 // Destructor
@@ -214,7 +218,7 @@ void SDLGraphicsProgram::UpdateCube(float x, float y, float z) {
 	// This is the logic for view and projection(above transform is for model)
 	glm::mat4 view = glm::mat4(1.0f);
 	glm::mat4 projection = glm::mat4(1.0f);
-	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp); // Use the camera properties to determine the view matrix
+	view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp); // Use the camera properties to determine the view matrix
 	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 	// retrieve the matrix uniform locations
 	unsigned int viewLoc = glGetUniformLocation(program, "view");
@@ -265,26 +269,44 @@ void SDLGraphicsProgram::Loop() {
 			if (e.type == SDL_QUIT) {
 				quit = true;
 			}
-			if (e.type == SDL_MOUSEMOTION) {
-				int mouseX = e.motion.x;
-				int mouseY = e.motion.y;
+			else if (e.type == SDL_MOUSEMOTION) {
+				// capture cursor location update for the mouse
+				int newMousePosX = e.motion.x;
+				int newMousePosY = e.motion.y;
+
+				float xDiff = newMousePosX - mousePosX;
+				float yDiff = newMousePosY - mousePosY;
+				xDiff *= mouseSensitivity;
+				yDiff *= mouseSensitivity;
+
+				mousePosX = newMousePosX;
+				mousePosY = newMousePosY;
+
+				// Update angles for the camera's direction
+				pitch += yDiff;
+				yaw -= xDiff;
+
+				// Update the direction of the camera
+				cameraDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+				cameraDir.y = sin(glm::radians(pitch));
+				cameraDir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 			}
-			if (e.type = SDL_KEYDOWN) {
+			else if (e.type = SDL_KEYDOWN) {
 				switch (e.key.keysym.sym) {
 					case SDLK_q:
 						quit = true;
 						break;
 					case SDLK_w:
-						cameraPos += moveSpeed * cameraFront;
+						cameraPos += moveSpeed * cameraDir;
 						break;
 					case SDLK_s:
-						cameraPos -= moveSpeed * cameraFront;
+						cameraPos -= moveSpeed * cameraDir;
 						break;
 					case SDLK_a:
-						cameraPos -= moveSpeed * glm::cross(cameraFront, cameraUp);
+						cameraPos -= moveSpeed * glm::cross(cameraDir, cameraUp);
 						break;
 					case SDLK_d:
-						cameraPos += moveSpeed * glm::cross(cameraFront, cameraUp);
+						cameraPos += moveSpeed * glm::cross(cameraDir, cameraUp);
 						break;
 				}
 			}
@@ -293,6 +315,8 @@ void SDLGraphicsProgram::Loop() {
 		Render();
 
 	}
+
+	std::cout << "That's all folks!" << std::endl;
 }
 
 

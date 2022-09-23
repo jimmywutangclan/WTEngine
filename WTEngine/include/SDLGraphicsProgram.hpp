@@ -19,6 +19,8 @@
 const unsigned int attr_size = 5;
 // the speed at which the camera moves
 const float moveSpeed = 0.05f;
+// mouse sensitivity
+const float mouseSensitivity = -0.6f;
 
 class SDLGraphicsProgram {
 public:
@@ -46,8 +48,14 @@ private:
 
     // Camera properties:
     glm::vec3 cameraPos;
-    glm::vec3 cameraFront;
+    glm::vec3 cameraDir;
     glm::vec3 cameraUp;
+    float pitch; 
+    float yaw;
+
+    // Mouse position properties
+    int mousePosX;
+    int mousePosY;
 
     // Temporary for base cube
     std::vector<float> vertexArray;
