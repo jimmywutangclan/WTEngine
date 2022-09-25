@@ -1,7 +1,7 @@
 #include "SDLGraphicsProgram.hpp"
 
 // Constructor
-SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
+SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float speed) {
 	width = w;
 	height = h;
 
@@ -48,20 +48,24 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h) {
 
 	std::cout << "Setup success" << std::endl;
 
-	LoadCube("./resources/fortnit.jpg");
-
-	std::cout << "Quad creation success" << std::endl;
-
-	curr_angle = 0.0f;
-
 	// Set up Camera
-	cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	cameraDir = glm::vec3(0.0f, 0.0f, -1.0f);
-	cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-	pitch = 0.0f; // camera direction starting looking straight, not upward or downwards
-	yaw = -90.0f; // camera direction starting facing forwards, not left or right
+	camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, -90.0f, width, height);
+
+	// Set up mouse and movement input settings
 	mousePosX = width / 2;
 	mousePosY = height / 2;
+	moveSpeed = speed;
+	mouseSensitivity = sensitivity;
+
+	// Add cubes to the world
+	Cube new_cube(glm::vec3(-0.2,0.2,0.3), glm::vec3(0,90,45), glm::vec3(1,1,1), "./resources/fortnit.jpg");
+	Cube cringe_cube(glm::vec3(0.7,0.7,-0.3), glm::vec3(20,30,135), glm::vec3(1,1,1), "./resources/lose_subscriber.png");
+	cubes.push_back(new_cube);
+	cubes.push_back(cringe_cube);
+
+	skybox = new Cube(glm::vec3(0,0,3), glm::vec3(0,0,0), glm::vec3(100,100,100), "./resources/matrix_sky.jpeg");
+
+	std::cout << "Game Objects created" << std::endl;
 }
 
 // Destructor
@@ -72,166 +76,11 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 	SDL_Quit();
 }
 
-// Load Cube properties
-void SDLGraphicsProgram::LoadCube(std::string textureAddr) {
-	// Set up base triangle 2 attributes, position/texture mapping)
-	vertexArray = {
-		// Back cube
-		// First Triangle
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
-		-0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // top right 
-		// Second Triangle
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
-
-		// Front cube
-		// Third Triangle
-		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
-		// Fourth Triangle
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
-		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
-
-		// Side left cube
-		// First Triangle
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		-0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
-		// Second Triangle
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
-
-		// Side right cube
-		// First Triangle
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right 
-		// Second Triangle
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
-
-		// top cube
-		// First Triangle
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
-		// Second triangle
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
-
-		// bottom cube
-		// First Triangle
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
-		// Second triangle
-		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // top left
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
-	};
-
-	indexArray = {
-		// back cube
-		0,1,2,
-		3,4,5,
-		// front cube
-		6,7,8,
-		9,10,11,
-		// side left
-		12,13,14,
-		15,16,17,
-		// side right
-		18,19,20,
-		21,22,23,
-		// top cube
-		24,25,26,
-		27,28,29,
-		// bottom cube
-		30,31,32,
-		33,34,35
-	};
-
-	// Generate all buffers first
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	// Bind VAO buffer 
-	glBindVertexArray(VAO);
-	// Set up VBO buffer
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertexArray.size(), &vertexArray[0], GL_STATIC_DRAW);
-	// Set up EBO
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexArray.size(), &indexArray[0], GL_STATIC_DRAW);
-	// Set up vertex attribute pointer within VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, attr_size * sizeof(float), (void*)0); // attribute 0(position)
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, attr_size * sizeof(float), (void*)(3 * sizeof(float))); // attribute 1(texture mapping)
-	glEnableVertexAttribArray(1);
-
-	// Set up texture 1
-	int width, height, nrChannels;
-	unsigned char* textureData = stbi_load(textureAddr.c_str(), &width, &height, &nrChannels, 0);
-	if (!textureData) {
-		std::cout << "Texture loading error" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, textureData);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	stbi_image_free(textureData);
-
-	// Set up uniform variable for the texture
-	glUseProgram(program);
-	glUniform1i(glGetUniformLocation(program, "texture1"), 0); // Set up uniform variable "texture1" to use the 0th texture
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-}
-
-// Called by Render each time, to draw the cube at a specific position, rotate it, and update uniform transformation matrices
-void SDLGraphicsProgram::UpdateCube(float x, float y, float z) {
-	// Starting from identity matrix, set the quad's position relative to the world origin, rotate, and then scale the model
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(x,y,z)); // Rotate matrix by 90 degrees on the z-axis
-	model = glm::rotate(model, glm::radians(curr_angle), glm::vec3(1.0f, 1.0f, 1.0f)); // Rotate matrix by 90 degrees on specified axes
-	model = glm::scale(model, glm::vec3(0.6f, 0.6f, 0.6f)); // Scale all axes by 0.6x
-	unsigned int modelLoc = glGetUniformLocation(program, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-	// Increment the angle after every tick
-	curr_angle += 0.25f;
-	if (curr_angle >= 360.0f) {
-		curr_angle = 0;
-	}
-
-
-	// This is the logic for view and projection(above transform is for model)
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
-	view = glm::lookAt(cameraPos, cameraPos + cameraDir, cameraUp); // Use the camera properties to determine the view matrix
-	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
-	// retrieve the matrix uniform locations
-	unsigned int viewLoc = glGetUniformLocation(program, "view");
-	unsigned int projLoc = glGetUniformLocation(program, "projection");
-	// pass them to the shaders 
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
-}
 
 // For each tick within the Loop, call render to generate image
 void SDLGraphicsProgram::Render() {
 	// Just render background
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
 	// Enable depth test
 	glEnable(GL_DEPTH_TEST);
@@ -239,16 +88,13 @@ void SDLGraphicsProgram::Render() {
 	//Clear color buffer and Depth Buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	UpdateCube(-0.2, 0.2, 0.3);
+	// Draw skybox
+	skybox->Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 
 	// Activate program and draw the shapes
-	glUseProgram(program);
-	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
-
-	// Update the cube world space to be a new value
-	UpdateCube(0.7, 0.7, -0.3);
-	// Using the existing VBO, VAO and EBO, draw another cube in the new world space updated earlier
-	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
+	for (Cube c : cubes) {
+		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
+	}
 
 
 	SDL_GL_SwapWindow(window);
@@ -282,14 +128,7 @@ void SDLGraphicsProgram::Loop() {
 				mousePosX = newMousePosX;
 				mousePosY = newMousePosY;
 
-				// Update angles for the camera's direction
-				pitch += yDiff;
-				yaw -= xDiff;
-
-				// Update the direction of the camera
-				cameraDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-				cameraDir.y = sin(glm::radians(pitch));
-				cameraDir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+				camera->rotateDir(yDiff, -xDiff, 0);
 			}
 			else if (e.type = SDL_KEYDOWN) {
 				switch (e.key.keysym.sym) {
@@ -297,23 +136,24 @@ void SDLGraphicsProgram::Loop() {
 						quit = true;
 						break;
 					case SDLK_w:
-						cameraPos += moveSpeed * cameraDir;
+						camera->moveRelativeToForward(moveSpeed, 0, 0);
 						break;
 					case SDLK_s:
-						cameraPos -= moveSpeed * cameraDir;
+						camera->moveRelativeToForward(-moveSpeed, 0, 0);
 						break;
 					case SDLK_a:
-						cameraPos -= moveSpeed * glm::cross(cameraDir, cameraUp);
+						camera->moveRelativeToForward(0, -moveSpeed, 0);
 						break;
 					case SDLK_d:
-						cameraPos += moveSpeed * glm::cross(cameraDir, cameraUp);
+						camera->moveRelativeToForward(0, moveSpeed, 0);
 						break;
 				}
 			}
 		}
 
+		// Update position of the skybox
+		//skybox->position = cameraPos;
 		Render();
-
 	}
 
 	std::cout << "That's all folks!" << std::endl;

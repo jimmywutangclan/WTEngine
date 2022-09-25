@@ -15,23 +15,19 @@
 #include <string>
 #include <fstream>
 
+// In-house code
+#include "Objects/Cube.hpp"
+#include "Components/Camera.hpp"
+
 // the size of how many floats a vertex use to describe all its attributes
 const unsigned int attr_size = 5;
-// the speed at which the camera moves
-const float moveSpeed = 0.05f;
-// mouse sensitivity
-const float mouseSensitivity = -0.6f;
 
 class SDLGraphicsProgram {
 public:
     // Constructor
-    SDLGraphicsProgram(int w, int h);
+    SDLGraphicsProgram(int w, int h, float sensitivity, float moveSpeed);
     // Destructor
     ~SDLGraphicsProgram();
-    // Load cube properties
-    void LoadCube(std::string texture);
-    // Create, Update and Bind uniform Model, View and Projection matrices for the cube
-    void UpdateCube(float x, float y, float z);
     // Render images
     void Render();
     // Loop
@@ -47,30 +43,24 @@ private:
     SDL_GLContext glContext;
 
     // Camera properties:
-    glm::vec3 cameraPos;
-    glm::vec3 cameraDir;
-    glm::vec3 cameraUp;
-    float pitch; 
-    float yaw;
+    Camera* camera;
+
+    // the speed at which the camera moves
+    float moveSpeed;
+    // mouse sensitivity
+    float mouseSensitivity;
 
     // Mouse position properties
     int mousePosX;
     int mousePosY;
 
-    // Temporary for base cube
-    std::vector<float> vertexArray;
-    std::vector<unsigned int> indexArray;
-    unsigned int texture;
-    float curr_angle;
-
-    // VBO, VAO, and EBO
-    // VBO and EBO are the arrays for vertices/indices associated with our cube
-    // VAO stores attributes for how to interpret each vertex
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
-
+    // The ID of the OpenGL Program
     unsigned int program;
+
+    // List of Cubes
+    std::vector<Cube> cubes;
+
+    Cube * skybox;
 };
 
 

@@ -145,12 +145,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Components\Camera.cpp" />
+    <ClCompile Include="src\Components\Skybox.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Objects\Cube.cpp" />
     <ClCompile Include="src\SDLGraphicsProgram.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Components\Camera.hpp" />
+    <ClInclude Include="include\Components\MouseInput.hpp" />
+    <ClInclude Include="include\Components\Skybox.hpp" />
+    <ClInclude Include="include\Objects\Cube.hpp" />
     <ClInclude Include="include\SDLGraphicsProgram.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
