@@ -16,13 +16,13 @@
 class Cube {
 public:
 	// Constructor
-	Cube(glm::vec3 pos, glm::vec3 rot, glm::vec3 sca, std::string textureLoc);
+	Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, std::string textureLoc);
 	// Destructor
 	~Cube();
 
 	void Update();
 
-	void Render(glm::mat4 view, glm::mat4 proj, unsigned int program, float rotationAmt);
+	void Render(glm::mat4 view, glm::mat4 proj, unsigned int program);
 
 	// Transformation for the object
 	glm::vec3 position;

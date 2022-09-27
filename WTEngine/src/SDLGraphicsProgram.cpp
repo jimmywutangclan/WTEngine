@@ -58,8 +58,8 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float sp
 	mouseSensitivity = sensitivity;
 
 	// Add cubes to the world
-	Cube new_cube(glm::vec3(-0.2,0.2,0.3), glm::vec3(0,90,45), glm::vec3(1,1,1), "./resources/skybox.png");
-	Cube cringe_cube(glm::vec3(0.7,0.7,-0.3), glm::vec3(20,30,135), glm::vec3(1,1,1), "./resources/lose_subscriber.png");
+	Cube cringe_cube(glm::vec3(4.0f,0.0f,-3.0f), glm::vec3(0,90,0), glm::vec3(6.6f,1.3f,0.1f), "./resources/lose_subscriber.png");
+	Cube new_cube(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), "./resources/fortnit.jpg");
 	cubes.push_back(new_cube);
 	cubes.push_back(cringe_cube);
 
@@ -78,7 +78,7 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 
 
 // For each tick within the Loop, call render to generate image
-void SDLGraphicsProgram::Render(float rotationAmt) {
+void SDLGraphicsProgram::Render() {
 	// Just render background
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
@@ -93,7 +93,7 @@ void SDLGraphicsProgram::Render(float rotationAmt) {
 
 	// Activate program and draw the shapes
 	for (Cube c : cubes) {
-		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program, rotationAmt);
+		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 	}
 
 
@@ -108,10 +108,7 @@ void SDLGraphicsProgram::Loop() {
 	// Event handler
 	SDL_Event e;
 
-	float rotationAmt = 0.0f;
-
 	while (!quit) {
-		rotationAmt += 0.1f;
 		// SDL Accept input
 		while (SDL_PollEvent(&e) != 0) {
 			// Quit application
@@ -156,8 +153,7 @@ void SDLGraphicsProgram::Loop() {
 
 		// Update position of the skybox
 		skybox->position = camera->position;
-		Render(rotationAmt);
-		std::cout << rotationAmt << std::endl;
+		Render();
 	}
 
 	std::cout << "That's all folks!" << std::endl;

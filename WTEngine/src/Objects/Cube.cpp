@@ -1,6 +1,6 @@
 #include "Objects/Cube.hpp"
 
-Cube::Cube(glm::vec3 pos, glm::vec3 rot, glm::vec3 sca, std::string textureLoc) {
+Cube::Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, std::string textureLoc) {
 	vertexArray = {
 		// Back cube
 		// First Triangle
@@ -116,9 +116,9 @@ Cube::Cube(glm::vec3 pos, glm::vec3 rot, glm::vec3 sca, std::string textureLoc) 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(textureData);
 
-	position = pos;
-	rotation = rot;
-	scale = sca;
+	position = _position;
+	rotation = _rotation;
+	scale = _scale;
 }
 
 Cube::~Cube() {
@@ -129,12 +129,12 @@ void Cube::Update() {
 
 }
 
-void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program, float rotationAmt) {
+void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 	// Starting from identity matrix, set the quad's position relative to the world origin, rotate, and then scale the model
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, position);
 	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(rotationAmt), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, scale);
 

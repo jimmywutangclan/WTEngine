@@ -30,7 +30,7 @@ public:
     // Destructor
     ~SDLGraphicsProgram();
     // Render images
-    void Render(float rotationAmt);
+    void Render();
     // Loop
     void Loop();
     // Set up shaders
