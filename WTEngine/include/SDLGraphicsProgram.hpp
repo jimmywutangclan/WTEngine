@@ -18,6 +18,7 @@
 // In-house code
 #include "Objects/Cube.hpp"
 #include "Components/Camera.hpp"
+#include "Components/Skybox.hpp"
 
 // the size of how many floats a vertex use to describe all its attributes
 const unsigned int attr_size = 5;
@@ -29,7 +30,7 @@ public:
     // Destructor
     ~SDLGraphicsProgram();
     // Render images
-    void Render();
+    void Render(float rotationAmt);
     // Loop
     void Loop();
     // Set up shaders
@@ -60,7 +61,7 @@ private:
     // List of Cubes
     std::vector<Cube> cubes;
 
-    Cube * skybox;
+    Skybox * skybox;
 };
 
 

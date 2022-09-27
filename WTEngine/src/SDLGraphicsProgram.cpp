@@ -49,7 +49,7 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float sp
 	std::cout << "Setup success" << std::endl;
 
 	// Set up Camera
-	camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, -90.0f, width, height);
+	camera = new Camera(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f), 0.0f, 0.0f, -90.0f, width, height, 100);
 
 	// Set up mouse and movement input settings
 	mousePosX = width / 2;
@@ -58,12 +58,12 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float sp
 	mouseSensitivity = sensitivity;
 
 	// Add cubes to the world
-	Cube new_cube(glm::vec3(-0.2,0.2,0.3), glm::vec3(0,90,45), glm::vec3(1,1,1), "./resources/fortnit.jpg");
+	Cube new_cube(glm::vec3(-0.2,0.2,0.3), glm::vec3(0,90,45), glm::vec3(1,1,1), "./resources/skybox.png");
 	Cube cringe_cube(glm::vec3(0.7,0.7,-0.3), glm::vec3(20,30,135), glm::vec3(1,1,1), "./resources/lose_subscriber.png");
 	cubes.push_back(new_cube);
 	cubes.push_back(cringe_cube);
 
-	skybox = new Cube(glm::vec3(0,0,3), glm::vec3(0,0,0), glm::vec3(100,100,100), "./resources/matrix_sky.jpeg");
+	skybox = new Skybox(camera->viewingDist, "./resources/hqskybox.jpg");
 
 	std::cout << "Game Objects created" << std::endl;
 }
@@ -78,7 +78,7 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 
 
 // For each tick within the Loop, call render to generate image
-void SDLGraphicsProgram::Render() {
+void SDLGraphicsProgram::Render(float rotationAmt) {
 	// Just render background
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
@@ -93,7 +93,7 @@ void SDLGraphicsProgram::Render() {
 
 	// Activate program and draw the shapes
 	for (Cube c : cubes) {
-		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
+		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program, rotationAmt);
 	}
 
 
@@ -108,7 +108,10 @@ void SDLGraphicsProgram::Loop() {
 	// Event handler
 	SDL_Event e;
 
+	float rotationAmt = 0.0f;
+
 	while (!quit) {
+		rotationAmt += 0.1f;
 		// SDL Accept input
 		while (SDL_PollEvent(&e) != 0) {
 			// Quit application
@@ -152,8 +155,9 @@ void SDLGraphicsProgram::Loop() {
 		}
 
 		// Update position of the skybox
-		//skybox->position = cameraPos;
-		Render();
+		skybox->position = camera->position;
+		Render(rotationAmt);
+		std::cout << rotationAmt << std::endl;
 	}
 
 	std::cout << "That's all folks!" << std::endl;

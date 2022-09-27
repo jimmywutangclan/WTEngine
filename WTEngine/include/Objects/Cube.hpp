@@ -22,12 +22,13 @@ public:
 
 	void Update();
 
-	void Render(glm::mat4 view, glm::mat4 proj, unsigned int program);
+	void Render(glm::mat4 view, glm::mat4 proj, unsigned int program, float rotationAmt);
 
 	// Transformation for the object
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
+
 private:
 	// How many attributes in the VBO and VAO?
 	const unsigned int attrs_size = 5;

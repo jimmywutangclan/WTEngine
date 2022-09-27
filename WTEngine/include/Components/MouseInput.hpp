@@ -3,6 +3,6 @@
 
 class MouseInput {
 
-}
+};
 
 #endif

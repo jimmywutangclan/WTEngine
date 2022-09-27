@@ -129,12 +129,12 @@ void Cube::Update() {
 
 }
 
-void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
+void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program, float rotationAmt) {
 	// Starting from identity matrix, set the quad's position relative to the world origin, rotate, and then scale the model
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, position);
 	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(rotationAmt), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	model = glm::scale(model, scale);
 
@@ -154,7 +154,10 @@ void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 	glUniform1i(glGetUniformLocation(program, "texture1"), 0); // Set up uniform variable "texture1" to use the 0th texture
 
 
-	// Activate and bind texture
+	// Activate and bind texture, VBO and EBO
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);	glActiveTexture(GL_TEXTURE0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 

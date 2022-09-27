@@ -1,18 +1,20 @@
 #include "Components/Camera.hpp"
 
-Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float input_roll, float input_pitch, float input_yaw, float width, float height) {
+Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float input_roll, float input_pitch, float input_yaw, float width, float height, float _viewingDist) {
 	position = pos;
 	direction = dir;
 	upward = up;
 
 	// Set up projection matrix since it's constant
-	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), (float)width / (float)height, 0.1f, _viewingDist);
 
 
 	// Set up roll, pitch and yaw
 	roll = input_roll;
 	pitch = input_pitch;
 	yaw = input_yaw;
+
+	viewingDist = _viewingDist;
 }
 
 Camera::~Camera() {

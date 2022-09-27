@@ -8,7 +8,7 @@
 
 class Camera {
 public:	
-	Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float input_roll, float input_pitch, float input_yaw, float width, float height);
+	Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float input_roll, float input_pitch, float input_yaw, float width, float height, float viewingDist);
 	
 	~Camera();
 
@@ -21,14 +21,16 @@ public:
 	glm::mat4 getViewMatrix();
 	
 	glm::mat4 getProjectionMatrix();
-private:
-	float roll;
-	float pitch;
-	float yaw;
 
 	glm::vec3 position;
 	glm::vec3 direction;
 	glm::vec3 upward;
+
+	float viewingDist;
+private:
+	float roll;
+	float pitch;
+	float yaw;
 
 	// projection is a constant
 	glm::mat4 projection;
