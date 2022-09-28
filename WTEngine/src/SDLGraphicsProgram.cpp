@@ -92,7 +92,8 @@ void SDLGraphicsProgram::Render() {
 	skybox->Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 
 	// Activate program and draw the shapes
-	for (Cube c : cubes) {
+	for (Cube & c : cubes) {
+		c.Update();
 		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 	}
 
