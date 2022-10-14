@@ -59,7 +59,7 @@ private:
     unsigned int program;
 
     // List of Cubes
-    std::vector<Cube> cubes;
+    std::vector<Cube*> cubes;
 
     Skybox * skybox;
 };

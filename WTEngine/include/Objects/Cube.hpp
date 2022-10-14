@@ -16,7 +16,7 @@
 class Cube {
 public:
 	// Constructor
-	Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, std::string textureLoc);
+	Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc);
 	// Destructor
 	~Cube();
 
@@ -28,6 +28,12 @@ public:
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
+	glm::vec3 offset; // offset of the object from its center(position)
+
+	// Add Child Cube
+	void AddChild(Cube * child);
+	// Get the world model matrix
+	glm::mat4 getWorldModelMatrix();
 
 private:
 	// How many attributes in the VBO and VAO?
@@ -44,6 +50,15 @@ private:
 
 	// Texture buffer for the Cube
 	unsigned int texture;
+
+	// Transform
+	// Matrix of the parent transforms cumulatively combined together
+	glm::mat4 worldModelMatrix;
+
+	// Parent Cube
+	Cube* parentCube;
+	// List of children
+	std::vector<Cube*> childCubes;
 };
 
 #endif

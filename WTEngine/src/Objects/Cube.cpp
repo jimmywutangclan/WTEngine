@@ -1,6 +1,6 @@
 #include "Objects/Cube.hpp"
 
-Cube::Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, std::string textureLoc) {
+Cube::Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc) {
 	vertexArray = {
 		// Back cube
 		// First Triangle
@@ -119,28 +119,49 @@ Cube::Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, std::stri
 	position = _position;
 	rotation = _rotation;
 	scale = _scale;
+	offset = _offset;
+
+	// Set up Parent cube pointer
+	parentCube = nullptr;
+	// Set up world model matrix
+	worldModelMatrix = glm::mat4(1.0f);
 }
 
 Cube::~Cube() {
 
 }
 
-void Cube::Update() {
+void Cube::AddChild(Cube * child) {
+	childCubes.push_back(child);
+	child->parentCube = this;
+}
 
+void Cube::Update() {
+	rotation.y += 0.1f;
+
+	if (parentCube == nullptr) {
+		worldModelMatrix = glm::mat4(1.0f);
+	}
+	else {
+		worldModelMatrix = glm::mat4(parentCube->worldModelMatrix);
+	}
+
+	worldModelMatrix = glm::translate(worldModelMatrix, position);
+	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	worldModelMatrix = glm::scale(worldModelMatrix, scale);
+	worldModelMatrix = glm::translate(worldModelMatrix, offset);
+
+	for (Cube* child : childCubes) {
+		child->Update();
+	}
 }
 
 void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
-	// Starting from identity matrix, set the quad's position relative to the world origin, rotate, and then scale the model
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, position);
-	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, scale);
-
 	// pass the model matrix into the shaders
 	unsigned int modelLoc = glGetUniformLocation(program, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(worldModelMatrix));
 
 	// retrieve the matrix uniform locations
 	unsigned int viewLoc = glGetUniformLocation(program, "view");
@@ -163,4 +184,8 @@ void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 
 	// Using the existing VBO, VAO, and EBO here, draw another cube in the new world space updated earlier
 	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
+
+	for (Cube* child : childCubes) {
+		child->Render(view, proj, program);
+	}
 }

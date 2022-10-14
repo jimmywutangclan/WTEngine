@@ -58,10 +58,11 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float sp
 	mouseSensitivity = sensitivity;
 
 	// Add cubes to the world
-	Cube cringe_cube(glm::vec3(4.0f,0.0f,-3.0f), glm::vec3(0,90,0), glm::vec3(6.6f,1.3f,0.1f), "./resources/lose_subscriber.png");
-	Cube new_cube(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), "./resources/fortnit.jpg");
+	Cube * cringe_cube = new Cube(glm::vec3(4.0f,0.0f,-3.0f), glm::vec3(0,90,0), glm::vec3(6.6f,1.3f,0.1f), glm::vec3(0,0,0), "./resources/lose_subscriber.png");
+	Cube * new_cube = new Cube(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), "./resources/fortnit.jpg");
 	cubes.push_back(new_cube);
-	cubes.push_back(cringe_cube);
+	//cubes.push_back(cringe_cube);
+	new_cube->AddChild(cringe_cube);
 
 	skybox = new Skybox(camera->viewingDist, "./resources/hqskybox.jpg");
 
@@ -92,9 +93,9 @@ void SDLGraphicsProgram::Render() {
 	skybox->Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 
 	// Activate program and draw the shapes
-	for (Cube & c : cubes) {
-		c.Update();
-		c.Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
+	for (Cube * c : cubes) {
+		c->Update();
+		c->Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 	}
 
 
