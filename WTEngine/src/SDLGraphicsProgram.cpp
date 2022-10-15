@@ -58,11 +58,13 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float sp
 	mouseSensitivity = sensitivity;
 
 	// Add cubes to the world
-	Cube * cringe_cube = new Cube(glm::vec3(4.0f,0.0f,-3.0f), glm::vec3(0,90,0), glm::vec3(6.6f,1.3f,0.1f), glm::vec3(0,0,0), "./resources/lose_subscriber.png");
-	Cube * new_cube = new Cube(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), "./resources/fortnit.jpg");
+	Cube * cringe_cube = new Cube("cringe", glm::vec3(4.0f, 0.0f, -3.0f), glm::vec3(0, 90, 0), glm::vec3(1.3f, 1.3f, 1.3f), glm::vec3(0, 0, 0), "./resources/lose_subscriber.png");
+	Cube * new_cube = new Cube("troll", glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), "./resources/fortnit.jpg");
+	Cube * new_cube2 = new Cube("troll2", glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0, 0, 0), "./resources/fortnit.jpg");
 	cubes.push_back(new_cube);
 	//cubes.push_back(cringe_cube);
 	new_cube->AddChild(cringe_cube);
+	cringe_cube->AddChild(new_cube2);
 
 	skybox = new Skybox(camera->viewingDist, "./resources/hqskybox.jpg");
 
@@ -77,6 +79,15 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 	SDL_Quit();
 }
 
+// For each tick within the Loop, update the Game Objects
+void SDLGraphicsProgram::Update() {
+	for (int i = 0; i < cubes.size(); i++) {
+		if (cubes[i]->id == "troll") {
+			cubes[i]->SetRotation(cubes[i]->GetRotation() + glm::vec3(0, 0.1f, 0));
+			cubes[i]->GetChild("cringe")->SetRotation(cubes[i]->GetChild("cringe")->GetRotation() + glm::vec3(0, 0.1f, 0));
+		}
+	}
+}
 
 // For each tick within the Loop, call render to generate image
 void SDLGraphicsProgram::Render() {
@@ -94,7 +105,6 @@ void SDLGraphicsProgram::Render() {
 
 	// Activate program and draw the shapes
 	for (Cube * c : cubes) {
-		c->Update();
 		c->Render(camera->getViewMatrix(), camera->getProjectionMatrix(), program);
 	}
 
@@ -155,6 +165,8 @@ void SDLGraphicsProgram::Loop() {
 
 		// Update position of the skybox
 		skybox->position = camera->position;
+
+		Update();
 		Render();
 	}
 

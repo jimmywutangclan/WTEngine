@@ -1,6 +1,6 @@
 #include "Objects/Cube.hpp"
 
-Cube::Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc) {
+Cube::Cube(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc) {
 	vertexArray = {
 		// Back cube
 		// First Triangle
@@ -116,43 +116,27 @@ Cube::Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(textureData);
 
+	// Set transforms and cube id
 	position = _position;
 	rotation = _rotation;
 	scale = _scale;
 	offset = _offset;
+	id = _id;
 
 	// Set up Parent cube pointer
 	parentCube = nullptr;
 	// Set up world model matrix
 	worldModelMatrix = glm::mat4(1.0f);
+
+	// Calculate the world model matrix
+	CalculateWorldModelMatrix();
 }
 
 Cube::~Cube() {
 
 }
 
-void Cube::AddChild(Cube * child) {
-	childCubes.push_back(child);
-	child->parentCube = this;
-}
-
-void Cube::Update() {
-	rotation.y += 0.1f;
-
-	if (parentCube == nullptr) {
-		worldModelMatrix = glm::mat4(1.0f);
-	}
-	else {
-		worldModelMatrix = glm::mat4(parentCube->worldModelMatrix);
-	}
-
-	worldModelMatrix = glm::translate(worldModelMatrix, position);
-	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-	worldModelMatrix = glm::scale(worldModelMatrix, scale);
-	worldModelMatrix = glm::translate(worldModelMatrix, offset);
-
+void Cube::Update() {	
 	for (Cube* child : childCubes) {
 		child->Update();
 	}
@@ -187,5 +171,80 @@ void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 
 	for (Cube* child : childCubes) {
 		child->Render(view, proj, program);
+	}
+}
+
+// Transform getters and setters
+glm::vec3 Cube::GetPosition() {
+	return glm::vec3(position.x, position.y, position.z);
+}
+
+glm::vec3 Cube::GetRotation() {
+	return glm::vec3(rotation.x, rotation.y, rotation.z);
+}
+
+glm::vec3 Cube::GetScale() {
+	return glm::vec3(scale.x, scale.y, scale.z);
+}
+
+glm::vec3 Cube::GetOffset() {
+	return glm::vec3(offset.x, offset.y, offset.z);
+}
+
+void Cube::SetPosition(glm::vec3 _position) {
+	position = _position;
+	CalculateWorldModelMatrix();
+}
+
+void Cube::SetRotation(glm::vec3 _rotation) {
+	rotation = _rotation;
+	CalculateWorldModelMatrix();
+}
+
+void Cube::SetScale(glm::vec3 _scale) {
+	scale = _scale;
+	CalculateWorldModelMatrix();
+}
+
+void Cube::SetOffset(glm::vec3 _offset) {
+	offset = _offset;
+	CalculateWorldModelMatrix();
+}
+
+// Adding child cube
+void Cube::AddChild(Cube* child) {
+	childCubes.push_back(child);
+	child->parentCube = this;
+}
+
+// Getting a child with a specific id
+Cube * Cube::GetChild(std::string childId) {
+	for (int i = 0; i < childCubes.size(); i++) {
+		if (childCubes[i]->id == childId) {
+			return childCubes[i];
+		}
+	}
+
+	return nullptr;
+}
+
+// Calculating world model matrix, calls children too
+void Cube::CalculateWorldModelMatrix() {
+	if (parentCube == nullptr) {
+		worldModelMatrix = glm::mat4(1.0f);
+	}
+	else {
+		worldModelMatrix = glm::mat4(parentCube->worldModelMatrix);
+	}
+
+	worldModelMatrix = glm::translate(worldModelMatrix, position);
+	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	worldModelMatrix = glm::scale(worldModelMatrix, scale);
+	worldModelMatrix = glm::translate(worldModelMatrix, offset);
+
+	for (Cube* child : childCubes) {
+		child->CalculateWorldModelMatrix();
 	}
 }

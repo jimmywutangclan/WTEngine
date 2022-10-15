@@ -29,6 +29,8 @@ public:
     SDLGraphicsProgram(int w, int h, float sensitivity, float moveSpeed);
     // Destructor
     ~SDLGraphicsProgram();
+    // Update Objects
+    void Update();
     // Render images
     void Render();
     // Loop

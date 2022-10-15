@@ -16,7 +16,7 @@
 class Cube {
 public:
 	// Constructor
-	Cube(glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc);
+	Cube(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc);
 	// Destructor
 	~Cube();
 
@@ -24,18 +24,42 @@ public:
 
 	void Render(glm::mat4 view, glm::mat4 proj, unsigned int program);
 
+	// Getters for transformation(gets copy)
+	glm::vec3 GetPosition();
+
+	glm::vec3 GetRotation();
+
+	glm::vec3 GetScale();
+
+	glm::vec3 GetOffset();
+
+	// Setters for transformation(updates world matrix)
+	void SetPosition(glm::vec3 _position);
+
+	void SetRotation(glm::vec3 _rotation);
+
+	void SetScale(glm::vec3 _scale);
+
+	void SetOffset(glm::vec3 _offset);
+
+	// Add Child Cube
+	void AddChild(Cube * child);
+
+	// Get Child of a specific id
+	Cube * GetChild(std::string childId);
+
+	// ID of the cube
+	std::string id;
+private:
+	// Calculate the World Model Matrix
+	void CalculateWorldModelMatrix();
+
 	// Transformation for the object
 	glm::vec3 position;
 	glm::vec3 rotation;
 	glm::vec3 scale;
 	glm::vec3 offset; // offset of the object from its center(position)
 
-	// Add Child Cube
-	void AddChild(Cube * child);
-	// Get the world model matrix
-	glm::mat4 getWorldModelMatrix();
-
-private:
 	// How many attributes in the VBO and VAO?
 	const unsigned int attrs_size = 5;
 
