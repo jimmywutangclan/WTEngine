@@ -1,6 +1,6 @@
-#include "Objects/Cube.hpp"
+#include "Objects/Object.hpp"
 
-Cube::Cube(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc) {
+Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc) {
 	vertexArray = {
 		// Back cube
 		// First Triangle
@@ -116,15 +116,15 @@ Cube::Cube(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 
 	glGenerateMipmap(GL_TEXTURE_2D);
 	stbi_image_free(textureData);
 
-	// Set transforms and cube id
+	// Set transforms and objec id
 	position = _position;
 	rotation = _rotation;
 	scale = _scale;
 	offset = _offset;
 	id = _id;
 
-	// Set up Parent cube pointer
-	parentCube = nullptr;
+	// Set up Parent object pointer
+	parent = nullptr;
 	// Set up world model matrix
 	worldModelMatrix = glm::mat4(1.0f);
 
@@ -132,17 +132,17 @@ Cube::Cube(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 
 	CalculateWorldModelMatrix();
 }
 
-Cube::~Cube() {
+Object::~Object() {
 
 }
 
-void Cube::Update() {	
-	for (Cube* child : childCubes) {
+void Object::Update() {
+	for (Object* child : children) {
 		child->Update();
 	}
 }
 
-void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
+void Object::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 	// pass the model matrix into the shaders
 	unsigned int modelLoc = glGetUniformLocation(program, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(worldModelMatrix));
@@ -166,62 +166,62 @@ void Cube::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
-	// Using the existing VBO, VAO, and EBO here, draw another cube in the new world space updated earlier
+	// Using the existing VBO, VAO, and EBO here, draw another object in the new world space updated earlier
 	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
 
-	for (Cube* child : childCubes) {
+	for (Object* child : children) {
 		child->Render(view, proj, program);
 	}
 }
 
 // Transform getters and setters
-glm::vec3 Cube::GetPosition() {
+glm::vec3 Object::GetPosition() {
 	return glm::vec3(position.x, position.y, position.z);
 }
 
-glm::vec3 Cube::GetRotation() {
+glm::vec3 Object::GetRotation() {
 	return glm::vec3(rotation.x, rotation.y, rotation.z);
 }
 
-glm::vec3 Cube::GetScale() {
+glm::vec3 Object::GetScale() {
 	return glm::vec3(scale.x, scale.y, scale.z);
 }
 
-glm::vec3 Cube::GetOffset() {
+glm::vec3 Object::GetOffset() {
 	return glm::vec3(offset.x, offset.y, offset.z);
 }
 
-void Cube::SetPosition(glm::vec3 _position) {
+void Object::SetPosition(glm::vec3 _position) {
 	position = _position;
 	CalculateWorldModelMatrix();
 }
 
-void Cube::SetRotation(glm::vec3 _rotation) {
+void Object::SetRotation(glm::vec3 _rotation) {
 	rotation = _rotation;
 	CalculateWorldModelMatrix();
 }
 
-void Cube::SetScale(glm::vec3 _scale) {
+void Object::SetScale(glm::vec3 _scale) {
 	scale = _scale;
 	CalculateWorldModelMatrix();
 }
 
-void Cube::SetOffset(glm::vec3 _offset) {
+void Object::SetOffset(glm::vec3 _offset) {
 	offset = _offset;
 	CalculateWorldModelMatrix();
 }
 
-// Adding child cube
-void Cube::AddChild(Cube* child) {
-	childCubes.push_back(child);
-	child->parentCube = this;
+// Adding child Object
+void Object::AddChild(Object* child) {
+	children.push_back(child);
+	child->parent = this;
 }
 
 // Getting a child with a specific id
-Cube * Cube::GetChild(std::string childId) {
-	for (int i = 0; i < childCubes.size(); i++) {
-		if (childCubes[i]->id == childId) {
-			return childCubes[i];
+Object * Object::GetChild(std::string childId) {
+	for (int i = 0; i < children.size(); i++) {
+		if (children[i]->id == childId) {
+			return children[i];
 		}
 	}
 
@@ -229,12 +229,12 @@ Cube * Cube::GetChild(std::string childId) {
 }
 
 // Calculating world model matrix, calls children too
-void Cube::CalculateWorldModelMatrix() {
-	if (parentCube == nullptr) {
+void Object::CalculateWorldModelMatrix() {
+	if (parent == nullptr) {
 		worldModelMatrix = glm::mat4(1.0f);
 	}
 	else {
-		worldModelMatrix = glm::mat4(parentCube->worldModelMatrix);
+		worldModelMatrix = glm::mat4(parent->worldModelMatrix);
 	}
 
 	worldModelMatrix = glm::translate(worldModelMatrix, position);
@@ -244,7 +244,7 @@ void Cube::CalculateWorldModelMatrix() {
 	worldModelMatrix = glm::scale(worldModelMatrix, scale);
 	worldModelMatrix = glm::translate(worldModelMatrix, offset);
 
-	for (Cube* child : childCubes) {
+	for (Object* child : children) {
 		child->CalculateWorldModelMatrix();
 	}
 }

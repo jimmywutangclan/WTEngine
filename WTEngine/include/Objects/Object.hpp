@@ -13,12 +13,12 @@
 #include <iostream>
 #include <string>
 
-class Cube {
+class Object {
 public:
 	// Constructor
-	Cube(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc);
+	Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc);
 	// Destructor
-	~Cube();
+	~Object();
 
 	void Update();
 
@@ -43,10 +43,10 @@ public:
 	void SetOffset(glm::vec3 _offset);
 
 	// Add Child Cube
-	void AddChild(Cube * child);
+	void AddChild(Object* child);
 
 	// Get Child of a specific id
-	Cube * GetChild(std::string childId);
+	Object* GetChild(std::string childId);
 
 	// ID of the cube
 	std::string id;
@@ -67,22 +67,22 @@ private:
 	std::vector<float> vertexArray;
 	std::vector<unsigned int> indexArray;
 
-	// VBO/VAO/EBO for the cube
+	// VBO/VAO/EBO for the object
 	unsigned int VBO;
 	unsigned int VAO;
 	unsigned int EBO;
 
-	// Texture buffer for the Cube
+	// Texture buffer for the Object
 	unsigned int texture;
 
 	// Transform
 	// Matrix of the parent transforms cumulatively combined together
 	glm::mat4 worldModelMatrix;
 
-	// Parent Cube
-	Cube* parentCube;
+	// Parent Object
+	Object* parent;
 	// List of children
-	std::vector<Cube*> childCubes;
+	std::vector<Object*> children;
 };
 
 #endif

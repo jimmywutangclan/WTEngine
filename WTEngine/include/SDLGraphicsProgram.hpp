@@ -16,7 +16,7 @@
 #include <fstream>
 
 // In-house code
-#include "Objects/Cube.hpp"
+#include "Objects/Object.hpp"
 #include "Components/Camera.hpp"
 #include "Components/Skybox.hpp"
 
@@ -60,8 +60,8 @@ private:
     // The ID of the OpenGL Program
     unsigned int program;
 
-    // List of Cubes
-    std::vector<Cube*> cubes;
+    // List of objects
+    std::vector<Object*> objects;
 
     Skybox * skybox;
 };
