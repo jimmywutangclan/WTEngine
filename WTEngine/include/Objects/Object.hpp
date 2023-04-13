@@ -1,5 +1,5 @@
-#ifndef CUBE_HPP
-#define CUBE_HPP
+#ifndef OBJECT_HPP
+#define OBJECT_HPP
 
 // C++ libraries
 #include "glad/glad.h"
@@ -7,6 +7,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "stb/stb_image.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/quaternion.hpp"
 
 // Standard stuff
 #include <vector>
@@ -50,7 +51,7 @@ public:
 
 	// ID of the cube
 	std::string id;
-private:
+protected:
 	// Calculate the World Model Matrix
 	void CalculateWorldModelMatrix();
 

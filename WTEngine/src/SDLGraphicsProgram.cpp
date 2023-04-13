@@ -83,8 +83,8 @@ SDLGraphicsProgram::~SDLGraphicsProgram() {
 void SDLGraphicsProgram::Update() {
 	for (int i = 0; i < objects.size(); i++) {
 		if (objects[i]->id == "troll") {
-			objects[i]->SetRotation(objects[i]->GetRotation() + glm::vec3(0, 0.1f, 0));
-			objects[i]->GetChild("cringe")->SetRotation(objects[i]->GetChild("cringe")->GetRotation() + glm::vec3(0, 0.1f, 0));
+			objects[i]->SetRotation(objects[i]->GetRotation() + glm::vec3(0, 0.01f, 0));
+			objects[i]->GetChild("cringe")->SetRotation(objects[i]->GetChild("cringe")->GetRotation() + glm::vec3(0, 0.04f, 0));
 		}
 	}
 }

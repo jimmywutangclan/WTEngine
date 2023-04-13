@@ -237,10 +237,14 @@ void Object::CalculateWorldModelMatrix() {
 		worldModelMatrix = glm::mat4(parent->worldModelMatrix);
 	}
 
+	glm::quat rotationQuat = glm::quat(rotation);
+	glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);
+
 	worldModelMatrix = glm::translate(worldModelMatrix, position);
-	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	//worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	//worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	//worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+	worldModelMatrix *= rotationMatrix;
 	worldModelMatrix = glm::scale(worldModelMatrix, scale);
 	worldModelMatrix = glm::translate(worldModelMatrix, offset);
 
