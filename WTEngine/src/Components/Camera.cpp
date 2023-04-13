@@ -2,6 +2,7 @@
 
 Camera::Camera(glm::vec3 pos, glm::vec3 dir, glm::vec3 up, float input_roll, float input_pitch, float input_yaw, float width, float height, float _viewingDist) {
 	position = pos;
+	startingDirection = dir;
 	direction = dir;
 	upward = up;
 
@@ -33,9 +34,14 @@ void Camera::rotateDir(float input_pitch, float input_yaw, float input_roll) {
 	yaw += input_yaw;
 	roll += input_roll;
 
+	/*
 	direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 	direction.y = sin(glm::radians(pitch));
-	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));*/
+
+	glm::quat directionRotationQuat = glm::quat(glm::vec3(-pitch, yaw, roll));
+	glm::mat4 directionRotationMatrix = glm::mat4_cast(directionRotationQuat);
+	direction = directionRotationMatrix * glm::vec4(startingDirection, 1);
 }
 
 glm::mat4 Camera::getViewMatrix() {
