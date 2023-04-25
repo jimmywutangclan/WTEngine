@@ -11,13 +11,50 @@
 
 // Standard stuff
 #include <vector>
+#include <map>
 #include <iostream>
+#include <fstream>
 #include <string>
+
+struct Vertex {
+	// coordinates of the vertex
+	float x, y, z;
+
+	Vertex(float _x, float _y, float _z) : x(_x), y(_y), z(_z) { }
+};
+
+struct TexCoord {
+	// texture mapping
+	float s, t;
+
+	TexCoord(float _s, float _t) : s(_s), t(_t) { }
+};
+
+struct TexturedVertex {
+	// coordinates of the vertex
+	float x, y, z;
+	// texture mapping
+	float s, t;
+
+	TexturedVertex(float _x, float _y, float _z, float _s, float _t) : x(_x), y(_y), z(_z), s(_s), t(_t) { }
+
+	// Tests if two VertexData are equal
+	bool operator== (const TexturedVertex rhs) const {
+		if ((x == rhs.x) && (y == rhs.y) && (z == rhs.z) && (s == rhs.s) && (t == rhs.t)) {
+			return true;
+		}
+		return false;
+	}
+
+	bool operator<(const TexturedVertex rhs) const {
+		return memcmp((void*)this, (void*)&rhs, sizeof(TexturedVertex)) > 0;
+	};
+};
 
 class Object {
 public:
 	// Constructor
-	Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc);
+	Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string modelLoc, std::string textureLoc);
 	// Destructor
 	~Object();
 

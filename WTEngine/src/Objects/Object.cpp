@@ -1,88 +1,175 @@
 #include "Objects/Object.hpp"
 
-Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string textureLoc) {
-	vertexArray = {
-		// Back cube
-		// First Triangle
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
-		-0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // top right 
-		// Second Triangle
-		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
-		0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _offset, std::string modelLoc, std::string textureLoc) {
+	if (modelLoc == "") {
+		vertexArray = {
+			// Back cube
+			// First Triangle
+			0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+			-0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
+			-0.5f,  0.5f, -0.5f, 1.0f, 0.0f, // top right 
+			// Second Triangle
+			0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
+			0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+			-0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
 
-		// Front cube
-		// Third Triangle
-		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
-		// Fourth Triangle
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
-		-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
+			// Front cube
+			// Third Triangle
+			-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+			0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+			0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
+			// Fourth Triangle
+			-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
+			-0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+			0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
 
-		// Side left cube
-		// First Triangle
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		-0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
-		// Second Triangle
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
-		-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
+			// Side left cube
+			// First Triangle
+			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+			-0.5f,  0.5f, 0.5f, 1.0f, 0.0f, // top right 
+			// Second Triangle
+			-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
+			-0.5f, -0.5f, -0.5f, 0.0f, 1.0f, // bottom left
+			-0.5f, 0.5f, 0.5f, 1.0f, 0.0f, // top right
 
-		// Side right cube
-		// First Triangle
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right 
-		// Second Triangle
-		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+			// Side right cube
+			// First Triangle
+			0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, // bottom right
+			0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right 
+			// Second Triangle
+			0.5f, 0.5f, 0.5f, 0.0f, 0.0f, // top left
+			0.5f, -0.5f, 0.5f, 0.0f, 1.0f, // bottom left
+			0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
 
-		// top cube
-		// First Triangle
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		0.5f, 0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
-		// Second triangle
-		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
-		-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+			// top cube
+			// First Triangle
+			-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+			0.5f, 0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+			0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
+			// Second triangle
+			-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, // top left
+			-0.5f, 0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+			0.5f, 0.5f, -0.5f, 1.0f, 0.0f, // top right
 
-		// bottom cube
-		// First Triangle
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
-		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
-		// Second triangle
-		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // top left
-		0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
-		-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
-	};
+			// bottom cube
+			// First Triangle
+			0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, // bottom right
+			-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
+			// Second triangle
+			0.5f, -0.5f, -0.5f, 0.0f, 0.0f, // top left
+			0.5f, -0.5f, 0.5f, 0.0f, 1.0f, //bottom left
+			-0.5f, -0.5f, -0.5f, 1.0f, 0.0f, // top right
+		};
 
-	indexArray = {
-		// back cube
-		0,1,2,
-		3,4,5,
-		// front cube
-		6,7,8,
-		9,10,11,
-		// side left
-		12,13,14,
-		15,16,17,
-		// side right
-		18,19,20,
-		21,22,23,
-		// top cube
-		24,25,26,
-		27,28,29,
-		// bottom cube
-		30,31,32,
-		33,34,35
-	};
+		indexArray = {
+			// back cube
+			0,1,2,
+			3,4,5,
+			// front cube
+			6,7,8,
+			9,10,11,
+			// side left
+			12,13,14,
+			15,16,17,
+			// side right
+			18,19,20,
+			21,22,23,
+			// top cube
+			24,25,26,
+			27,28,29,
+			// bottom cube
+			30,31,32,
+			33,34,35
+		};
+	}
+	else {
+		std::ifstream infile;
+		infile.open(modelLoc);
+		std::string token;
+
+		std::vector<Vertex> vertices;
+		std::vector<TexCoord> texCoords;
+
+		std::map<TexturedVertex, int> vertexIndexMap;
+
+		int uniqueVerticesCount = 0;
+
+		while (infile >> token) {
+			// Recognizes v, vt and f flags(For vertex, vertex texture coord, and which vertices are in a triangle(aka index array))
+			if (token[0] == 'v') {
+				if (token[1] == '\0') {
+					infile >> token;
+					float x = std::stof(token);
+					infile >> token;
+					float y = std::stof(token);
+					infile >> token;
+					float z = std::stof(token);
+					Vertex v = Vertex(x, y, z);
+					vertices.push_back(v);
+				}
+				else if (token[1] == 't') {
+					infile >> token;
+					float s = std::stof(token);
+					infile >> token;
+					float t = std::stof(token);
+					TexCoord tex = TexCoord(s, t);
+					texCoords.push_back(tex);
+				}
+			}
+			else if (token[0] == 'f') {
+				for (int i = 0; i < 3; i++) {
+					infile >> token;
+
+					char* vCstr;
+					char* vtCstr;
+					char* vnCstr;
+					char* tokenizerState;
+
+					int vIdx = -1;
+					int vtIdx = -1;
+					int vnIdx = -1;
+
+					char* face_cstr = new char[token.size() + 1];
+					rsize_t maxSize = sizeof face_cstr;
+					memcpy(face_cstr, token.c_str(), token.size() + 1);
+
+					vCstr = strtok_s(face_cstr, "/", &tokenizerState);
+					vtCstr = strtok_s(NULL, "/", &tokenizerState);
+					vnCstr = strtok_s(NULL, "/", &tokenizerState);
+
+					vIdx = std::stoi(vCstr) - 1;
+					vtIdx = std::stoi(vtCstr) - 1;
+					vnIdx = std::stoi(vnCstr) - 1;
+
+					Vertex currVertex = vertices[vIdx];
+					TexCoord currTexCoord = texCoords[vtIdx];
+
+					float x, y, z, s, t;
+					x = currVertex.x;
+					y = currVertex.y;
+					z = currVertex.z;
+					s = currTexCoord.s;
+					t = currTexCoord.t;
+
+					TexturedVertex currTexturedVertex(x, y, z, s, t);
+
+					if (vertexIndexMap.find(currTexturedVertex) == vertexIndexMap.end()) {
+						vertexIndexMap.insert(std::make_pair(currTexturedVertex, vertexIndexMap.size()));
+						vertexArray.push_back(x);
+						vertexArray.push_back(y);
+						vertexArray.push_back(z);
+						vertexArray.push_back(s);
+						vertexArray.push_back(t);
+					}
+					int vertexIndex = vertexIndexMap.find(currTexturedVertex)->second;
+					indexArray.push_back(vertexIndex);
+				}
+			}
+		}
+	}
 
 	// Generate all buffers first
 	glGenVertexArrays(1, &VAO);
@@ -160,14 +247,15 @@ void Object::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 
 
 	// Activate and bind texture, VBO and EBO
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);	glActiveTexture(GL_TEXTURE0);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBindVertexArray(VAO);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	// Using the existing VBO, VAO, and EBO here, draw another object in the new world space updated earlier
-	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, nullptr);
+	glBindVertexArray(0);
 
 	for (Object* child : children) {
 		child->Render(view, proj, program);

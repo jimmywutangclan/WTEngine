@@ -156,5 +156,8 @@ void Skybox::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	// Using the existing VBO, VAO, and EBO here, draw another cube in the new world space updated earlier
-	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, indexArray.size(), GL_UNSIGNED_INT, nullptr);
+
+	glBindVertexArray(0);
+
 }
