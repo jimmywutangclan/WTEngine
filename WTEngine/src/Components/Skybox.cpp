@@ -4,63 +4,63 @@ Skybox::Skybox(float viewingDist, std::string textureLoc) {
 	vertexArray = {
 		// -z cube
 		// First Triangle
-		-0.5f, -0.5f, -0.5f, 0.25f, 0.66666f, // bottom left inside
-		0.5f, -0.5f, -0.5f, 0.5f, 0.66666f, // bottom right inside
-		0.5f,  0.5f, -0.5f, 0.5f, 0.33334f, // top right inside 
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.66666f, // bottom left inside
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.66666f, // bottom right inside
+		0.5f,  0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.33334f, // top right inside 
 		// Second Triangle
-		-0.5f, 0.5f, -0.5f, 0.25f, 0.33334f, // top left inside
-		-0.5f, -0.5f, -0.5f, 0.25f, 0.66666f, // bottom left inside
-		0.5f, 0.5f, -0.5f, 0.5f, 0.33334f, // top right inside
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.33334f, // top left inside
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.66666f, // bottom left inside
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.33334f, // top right inside
 
 		// +x cube
 		// First triangle
-		0.5f, -0.5f, -0.5f, 0.5f, 0.66666f, // bottom left inside
-		0.5f, -0.5f, 0.5f, 0.75f, 0.66666f, // bottom right inside
-		0.5f, 0.5f, 0.5f, 0.75f, 0.33334f, // top right inside
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.66666f, // bottom left inside
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.75f, 0.66666f, // bottom right inside
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.75f, 0.33334f, // top right inside
 		// Second triangle
-		0.5f, 0.5f, -0.5f, 0.5f, 0.33334f, // top left inside
-		0.5f, -0.5f, -0.5f, 0.5f, 0.66666f, // bottom left inside
-		0.5f, 0.5f, 0.5f, 0.75f, 0.33334f, // top right inside
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.33334f, // top left inside
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.66666f, // bottom left inside
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.75f, 0.33334f, // top right inside
 
 		// +z cube
 		// First triangle
-		0.5f, -0.5f, 0.5f, 0.75f, 0.66666f, // bottom left inside
-		-0.5f, -0.5f, 0.5f, 1.0f, 0.66666f, // bottom right inside
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.33334f, // top right inside
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.75f, 0.66666f, // bottom left inside
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.66666f, // bottom right inside
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.33334f, // top right inside
 		// Second Triangle
-		0.5f, 0.5f, 0.5f, 0.75f, 0.33334f, // top left inside
-		0.5f, -0.5f, 0.5f, 0.75f, 0.66666f, // bottom left inside
-		-0.5f, 0.5f, 0.5f, 1.0f, 0.33334f, // top right inside
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.75f, 0.33334f, // top left inside
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.75f, 0.66666f, // bottom left inside
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.33334f, // top right inside
 
 		// -x cube
 		// First triangle
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.66666f, // bottom left inside
-		-0.5f, -0.5f, -0.5f, 0.25f, 0.66666f, // bottom right inside
-		-0.5f, 0.5f, -0.5f, 0.25f, 0.33334f, // top right inside
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.66666f, // bottom left inside
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.66666f, // bottom right inside
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.33334f, // top right inside
 		// Second triangle
-		-0.5f, 0.5f, 0.5f, 0.0f, 0.33334f, // top left inside
-		-0.5f, -0.5f, 0.5f, 0.0f, 0.66666f, // bottom left inside
-		-0.5f, 0.5f, -0.5f, 0.25f, 0.33334f, // top right inside
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.33334f, // top left inside
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 0.66666f, // bottom left inside
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.33334f, // top right inside
 
 		// +y cube
 		// First triangle
-		-0.5f, 0.5f, -0.5f, 0.25f, 0.33333f, // bottom left inside
-		0.5f, 0.5f, -0.5f, 0.5f, 0.33333f, // bottom right inside
-		0.5f, 0.5f, 0.5f, 0.5f, 0.0f, // top right inside
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.33333f, // bottom left inside
+		0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.33333f, // bottom right inside
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, // top right inside
 		// Second triangle
-		-0.5f, 0.5f, 0.5f, 0.25f, 0.0f, // top left inside
-		-0.5f, 0.5f, -0.5f, 0.25f, 0.33333f, // bottom left inside
-		0.5f, 0.5f, 0.5f, 0.5f, 0.0f, // top right inside
+		-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.0f, // top left inside
+		-0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.33333f, // bottom left inside
+		0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.0f, // top right inside
 
 		// -y cube
 		// First triangle
-		-0.5f, -0.5f, 0.5f, 0.25f, 1.0f, // bottom left inside
-		0.5f, -0.5f, 0.5f, 0.5f, 1.0f, // bottom right inside
-		0.5f, -0.5f, -0.5f, 0.5f, 0.66666f, // top right inside
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 1.0f, // bottom left inside
+		0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f, // bottom right inside
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.66666f, // top right inside
 		// Second triangle
-		-0.5f, -0.5f, -0.5f, 0.25f, 0.66666f, // top left inside
-		-0.5f, -0.5f, 0.5f, 0.25f, 1.0f, // bottom left inside
-		0.5f, -0.5f, -0.5f, 0.5f, 0.66666f, // top right inside
+		-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 0.66666f, // top left inside
+		-0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.25f, 1.0f, // bottom left inside
+		0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.5f, 0.66666f, // top right inside
 	};
 
 	indexArray = {
@@ -98,10 +98,12 @@ Skybox::Skybox(float viewingDist, std::string textureLoc) {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexArray.size(), &indexArray[0], GL_STATIC_DRAW);
 	// Set up vertex attribute pointer within VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, attrs_size * sizeof(float), (void*)0); // attribute 0(position)
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0); // attribute 0(position)
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, attrs_size * sizeof(float), (void*)(3 * sizeof(float))); // attribute 1(texture mapping)
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float))); // attribute 1(normal mapping)
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float))); // attribute 2(texture mapping)
+	glEnableVertexAttribArray(2);
 
 	// Set up texture 1
 	int width, height, nrChannels;

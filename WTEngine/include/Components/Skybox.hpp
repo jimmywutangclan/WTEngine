@@ -13,6 +13,9 @@
 #include <iostream>
 #include <string>
 
+// In house stuff
+#include <Objects/Object.hpp>
+
 class Skybox {
 public:
 	Skybox(float viewingDist, std::string textureLoc);

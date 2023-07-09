@@ -124,8 +124,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\jw297\Desktop\graphics\WTEngine\linkers\sdl2_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\jw297\Desktop\graphics\WTEngine\linkers\assimp;C:\Users\jw297\Desktop\graphics\WTEngine\linkers\sdl2_x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -149,6 +149,8 @@
     <ClCompile Include="src\Components\Skybox.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Objects\GameObject.cpp" />
+    <ClCompile Include="src\Objects\Mesh.cpp" />
     <ClCompile Include="src\Objects\Object.cpp" />
     <ClCompile Include="src\SDLGraphicsProgram.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
@@ -157,6 +159,8 @@
     <ClInclude Include="include\Components\Camera.hpp" />
     <ClInclude Include="include\Components\MouseInput.hpp" />
     <ClInclude Include="include\Components\Skybox.hpp" />
+    <ClInclude Include="include\Objects\GameObject.hpp" />
+    <ClInclude Include="include\Objects\Mesh.hpp" />
     <ClInclude Include="include\Objects\Object.hpp" />
     <ClInclude Include="include\SDLGraphicsProgram.hpp" />
   </ItemGroup>

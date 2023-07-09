@@ -16,6 +16,7 @@
 #include <fstream>
 
 // In-house code
+#include "Objects/GameObject.hpp"
 #include "Objects/Object.hpp"
 #include "Components/Camera.hpp"
 #include "Components/Skybox.hpp"
@@ -62,6 +63,10 @@ private:
 
     // List of objects
     std::vector<Object*> objects;
+    std::vector<GameObject*> gameObjects;
+
+    // Texture pool
+    std::map<std::string, Texture> texturePool;
 
     Skybox * skybox;
 };

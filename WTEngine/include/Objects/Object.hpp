@@ -16,11 +16,11 @@
 #include <fstream>
 #include <string>
 
-struct Vertex {
+struct VertexCoords {
 	// coordinates of the vertex
 	float x, y, z;
 
-	Vertex(float _x, float _y, float _z) : x(_x), y(_y), z(_z) { }
+	VertexCoords(float _x, float _y, float _z) : x(_x), y(_y), z(_z) { }
 };
 
 struct TexCoord {
@@ -49,6 +49,30 @@ struct TexturedVertex {
 	bool operator<(const TexturedVertex rhs) const {
 		return memcmp((void*)this, (void*)&rhs, sizeof(TexturedVertex)) > 0;
 	};
+};
+
+struct Vertex {
+	glm::vec3 pos;
+	glm::vec3 normal;
+	glm::vec2 texcoords;
+
+	// Tests if two VertexData are equal
+	bool operator== (const Vertex rhs) const {
+		if (pos == rhs.pos && normal == rhs.normal && texcoords == rhs.texcoords) {
+			return true;
+		}
+		return false;
+	}
+
+	bool operator<(const Vertex rhs) const {
+		return memcmp((void*)this, (void*)&rhs, sizeof(Vertex)) > 0;
+	};
+};
+
+struct Texture {
+	unsigned int id;
+	std::string type;
+	std::string path;
 };
 
 class Object {

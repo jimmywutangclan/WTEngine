@@ -90,10 +90,11 @@ Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::v
 		infile.open(modelLoc);
 		std::string token;
 
-		std::vector<Vertex> vertices;
-		std::vector<TexCoord> texCoords;
+		std::vector<glm::vec3> vertices;
+		std::vector<glm::vec3> normals;
+		std::vector<glm::vec2> texCoords;
 
-		std::map<TexturedVertex, int> vertexIndexMap;
+		std::map<Vertex, int> vertexIndexMap;
 
 		int uniqueVerticesCount = 0;
 
@@ -107,15 +108,25 @@ Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::v
 					float y = std::stof(token);
 					infile >> token;
 					float z = std::stof(token);
-					Vertex v = Vertex(x, y, z);
+					glm::vec3 v(x, y, z);
 					vertices.push_back(v);
+				}
+				else if (token[1] == 'n') {
+					infile >> token;
+					float x = std::stof(token);
+					infile >> token;
+					float y = std::stof(token);
+					infile >> token;
+					float z = std::stof(token);
+					glm::vec3 v(x, y, z);
+					normals.push_back(v);
 				}
 				else if (token[1] == 't') {
 					infile >> token;
 					float s = std::stof(token);
 					infile >> token;
 					float t = std::stof(token);
-					TexCoord tex = TexCoord(s, t);
+					glm::vec2 tex(s, t);
 					texCoords.push_back(tex);
 				}
 			}
@@ -144,27 +155,27 @@ Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::v
 					vtIdx = std::stoi(vtCstr) - 1;
 					vnIdx = std::stoi(vnCstr) - 1;
 
-					Vertex currVertex = vertices[vIdx];
-					TexCoord currTexCoord = texCoords[vtIdx];
+					glm::vec3 currVertex = vertices[vIdx];
+					glm::vec3 currNormal = normals[vnIdx];
+					glm::vec2 currTexCoord = texCoords[vtIdx];
 
-					float x, y, z, s, t;
-					x = currVertex.x;
-					y = currVertex.y;
-					z = currVertex.z;
-					s = currTexCoord.s;
-					t = currTexCoord.t;
+					Vertex curr;
+					curr.pos = currVertex;
+					curr.normal = currNormal;
+					curr.texcoords = currTexCoord;
 
-					TexturedVertex currTexturedVertex(x, y, z, s, t);
-
-					if (vertexIndexMap.find(currTexturedVertex) == vertexIndexMap.end()) {
-						vertexIndexMap.insert(std::make_pair(currTexturedVertex, vertexIndexMap.size()));
-						vertexArray.push_back(x);
-						vertexArray.push_back(y);
-						vertexArray.push_back(z);
-						vertexArray.push_back(s);
-						vertexArray.push_back(t);
+					if (vertexIndexMap.find(curr) == vertexIndexMap.end()) {
+						vertexIndexMap.insert(std::make_pair(curr, vertexIndexMap.size()));
+						vertexArray.push_back(currVertex.x);
+						vertexArray.push_back(currVertex.y);
+						vertexArray.push_back(currVertex.z);
+						vertexArray.push_back(currNormal.x);
+						vertexArray.push_back(currNormal.y);
+						vertexArray.push_back(currNormal.z);
+						vertexArray.push_back(currTexCoord.x);
+						vertexArray.push_back(currTexCoord.y);
 					}
-					int vertexIndex = vertexIndexMap.find(currTexturedVertex)->second;
+					int vertexIndex = vertexIndexMap.find(curr)->second;
 					indexArray.push_back(vertexIndex);
 				}
 			}
@@ -185,10 +196,12 @@ Object::Object(std::string _id, glm::vec3 _position, glm::vec3 _rotation, glm::v
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indexArray.size(), &indexArray[0], GL_STATIC_DRAW);
 	// Set up vertex attribute pointer within VAO
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, attrs_size * sizeof(float), (void*)0); // attribute 0(position)
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0); // attribute 0(position)
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, attrs_size * sizeof(float), (void*)(3 * sizeof(float))); // attribute 1(texture mapping)
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float))); // attribute 1(normal)
 	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(6 * sizeof(float))); // attribute 2(texture)
+	glEnableVertexAttribArray(2);
 
 	// Set up texture 1
 	int width, height, nrChannels;
@@ -243,7 +256,7 @@ void Object::Render(glm::mat4 view, glm::mat4 proj, unsigned int program) {
 
 	// Set up uniform variable for the texture
 	glUseProgram(program);
-	glUniform1i(glGetUniformLocation(program, "texture1"), 0); // Set up uniform variable "texture1" to use the 0th texture
+	glUniform1i(glGetUniformLocation(program, "texture_diffuse1"), 0); // Set up uniform variable "texture_diffuse1" to use the 0th texture
 
 
 	// Activate and bind texture, VBO and EBO
@@ -329,9 +342,6 @@ void Object::CalculateWorldModelMatrix() {
 	glm::mat4 rotationMatrix = glm::mat4_cast(rotationQuat);
 
 	worldModelMatrix = glm::translate(worldModelMatrix, position);
-	//worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-	//worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-	//worldModelMatrix = glm::rotate(worldModelMatrix, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 	worldModelMatrix *= rotationMatrix;
 	worldModelMatrix = glm::scale(worldModelMatrix, scale);
 	worldModelMatrix = glm::translate(worldModelMatrix, offset);
