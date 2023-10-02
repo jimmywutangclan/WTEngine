@@ -58,17 +58,17 @@ SDLGraphicsProgram::SDLGraphicsProgram(int w, int h, float sensitivity, float sp
 	mouseSensitivity = sensitivity;
 
 	// Add cubes to the world
-	Object* new_cube = new Object("troll", glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0, 0, 0), "./resources/models/chapel_obj.obj", "./resources/chapel_diffuse_180flip.jpg");
-	Object* gt2 = new Object("gt2", glm::vec3(6, 7, 9), glm::vec3(0, 19, 0), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0, 0, 0), "./resources/models/porsh.obj", "./resources/matrix_sky.jpeg");
+	Object* new_cube = new Object("troll", glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), glm::vec3(0.1f, 0.1f, 0.1f), glm::vec3(0, 0, 0), "./resources/models/windmill.obj", "./resources/windmill_diffuse_180flip.jpg");
+	Object* gt2 = new Object("gt2", glm::vec3(6, 7, 9), glm::vec3(0, 19, 0), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0, 0, 0), "./resources/models/porsh.obj", "./resources/models/porsh2.bmp");
 	objects.push_back(new_cube);
 	objects.push_back(gt2);
 	Object* cringe_cube = new Object("cringe", glm::vec3(4.0f, 0.0f, -3.0f), glm::vec3(0, 90, 0), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0, 0, 0), "./resources/Models/backpack/backpack.obj", "./resources/Models/backpack/diffuse.jpg");
 	Object* new_cube2 = new Object("model", glm::vec3(1, 1, 1), glm::vec3(0, 0, 0), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0, 0, 0), "./resources/models/windmill.obj", "./resources/windmill_diffuse_180flip.jpg");
 	new_cube->AddChild(cringe_cube);
 	cringe_cube->AddChild(new_cube2);
-	GameObject* new_gameobject = new GameObject();
-	new_gameobject->FromModelFile("./resources/Models/backpack/backpack.obj", true, &texturePool);
-	gameObjects.push_back(new_gameobject);
+	/*GameObject* new_gameobject = new GameObject("toothpaste");
+	new_gameobject->FromModelFile("./resources/Models/toothpaste/Toothpaste and Brush OBJ.obj", true, &texturePool, false);
+	gameObjects.push_back(new_gameobject);*/
 
 	skybox = new Skybox(camera->viewingDist, "./resources/hqskybox.jpg");
 

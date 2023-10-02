@@ -4,10 +4,10 @@ out vec4 FragColor;
 in vec2 texCoord;
 in vec3 fragNormal;
 in vec3 fragPos;
-in vec3 frogPosRelativeViewSpace;
 
 uniform sampler2D diffuse1;
 uniform sampler2D diffuse2;
+uniform vec3 viewPos;
 
 void main()
 {
@@ -19,13 +19,5 @@ void main()
     float lightingAngle = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = lightingAngle * lightColor;
 
-    // all of this is done relative to view
-    float specularStrength = 0.8;
-    vec3 viewDir = normalize(frogPosRelativeViewSpace);
-    vec3 reflectDir = reflect(-lightDir, normal);
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 128);
-    vec3 specular = specularStrength * spec * lightColor;  
-
-
-    FragColor = vec4((ambient + diffuse + specular) * texture(diffuse1, texCoord).rgb, 1.0);
+    FragColor = vec4((ambient + diffuse) * texture(diffuse1, texCoord).rgb, 1.0);
 } 

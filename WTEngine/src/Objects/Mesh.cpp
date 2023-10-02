@@ -1,6 +1,6 @@
 #include "Objects/Mesh.hpp"
 
-unsigned int TextureFromFile(std::string fileName, std::string dir);
+unsigned int TextureFromFile(std::string fileName, std::string dir, bool flipTextures);
 
 Mesh::Mesh() {
 
@@ -10,7 +10,7 @@ Mesh::~Mesh() {
 
 }
 
-void Mesh::LoadMesh(aiMesh* mesh, const aiScene* scene, std::string directory, std::map<std::string, Texture> * texturePool)
+void Mesh::LoadMesh(aiMesh* mesh, const aiScene* scene, std::string directory, std::map<std::string, Texture> * texturePool, bool flipTextures)
 {
 	bool meshHasTexture = mesh->mTextureCoords[0];
 	for (int i = 0; i < mesh->mNumVertices; i++) {
@@ -47,8 +47,8 @@ void Mesh::LoadMesh(aiMesh* mesh, const aiScene* scene, std::string directory, s
 	}
 	if (mesh->mMaterialIndex > 0) {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		LoadTexturesOfType(material, aiTextureType_DIFFUSE, "texture_diffuse", directory, texturePool);
-		LoadTexturesOfType(material, aiTextureType_SPECULAR, "texture_specular", directory, texturePool);
+		LoadTexturesOfType(material, aiTextureType_DIFFUSE, "texture_diffuse", directory, texturePool, flipTextures);
+		LoadTexturesOfType(material, aiTextureType_SPECULAR, "texture_specular", directory, texturePool, flipTextures);
 	}
 	SetupMeshInGL();
 }
@@ -110,14 +110,14 @@ void Mesh::Render(glm::mat4 parentModelTransform, glm::mat4 view, glm::mat4 proj
 	glBindVertexArray(0);
 }
 
-void Mesh::LoadTexturesOfType(aiMaterial * mat, aiTextureType type, std::string typeName, std::string directory, std::map<std::string, Texture> * texturePool) {
+void Mesh::LoadTexturesOfType(aiMaterial * mat, aiTextureType type, std::string typeName, std::string directory, std::map<std::string, Texture> * texturePool, bool flipTextures) {
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++) {
 		aiString str;
 		mat->GetTexture(type, i, &str);
 
 		if (texturePool->find(str.C_Str()) == texturePool->end()) {
 			Texture texture;
-			texture.id = TextureFromFile(str.C_Str(), directory);
+			texture.id = TextureFromFile(str.C_Str(), directory, flipTextures);
 			texture.type = typeName;
 			texture.path = str.C_Str();
 			textures.push_back(texture);
@@ -134,13 +134,17 @@ void Mesh::LoadTexturesOfType(aiMaterial * mat, aiTextureType type, std::string 
 	}
 }
 
-unsigned int TextureFromFile(std::string fileName, std::string dir) {
+unsigned int TextureFromFile(std::string fileName, std::string dir, bool flipTextures) {
 	std::string path = dir + "/" + fileName;
 	std::cout << path << std::endl;
 	int width, height, nrChannels;
-	stbi_set_flip_vertically_on_load(true);
+	if (flipTextures) {
+		stbi_set_flip_vertically_on_load(true);
+	}
 	unsigned char* textureData = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
-	stbi_set_flip_vertically_on_load(false);
+	if (flipTextures) {
+		stbi_set_flip_vertically_on_load(false);
+	}
 	if (!textureData) {
 		std::cout << "Texture loading error" << std::endl;
 		exit(EXIT_FAILURE);

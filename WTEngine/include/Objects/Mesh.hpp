@@ -15,7 +15,7 @@ class Mesh {
 public:
 	Mesh();
 	~Mesh();
-	void LoadMesh(aiMesh * mesh, const aiScene * scene, std::string directory, std::map<std::string, Texture> * texturePool);
+	void LoadMesh(aiMesh * mesh, const aiScene * scene, std::string directory, std::map<std::string, Texture> * texturePool, bool flipTextures);
 	void Render(glm::mat4 parentModelTransform, glm::mat4 view, glm::mat4 proj, unsigned int program);
 	void SetupMeshInGL();
 
@@ -23,7 +23,7 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 private:
-	void LoadTexturesOfType(aiMaterial* mat, aiTextureType type, std::string typeName, std::string directory, std::map<std::string, Texture> * texturePool);
+	void LoadTexturesOfType(aiMaterial* mat, aiTextureType type, std::string typeName, std::string directory, std::map<std::string, Texture> * texturePool, bool flipTextures);
 	unsigned int VAO;
 	unsigned int VBO;
 	unsigned int EBO;
